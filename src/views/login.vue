@@ -3,19 +3,19 @@
         <div class=' login--container' :class="active?'login--active':'preload'">
             <div class='login--form'>
                 <div class='login--username-container'>
-                    <label>Username</label>
-                    <input autofocus placeholder='Username' type='text'>
+                    <label>用户名</label>
+                    <a-input v-model="userName" autofocus placeholder='Username' type='text'/>
                 </div>
                 <div class='login--password-container'>
-                    <label>Password</label>
-                    <input placeholder='Password' type='password'>
+                    <label>密码</label>
+                    <a-input v-model="password" placeholder='Password' type='password'/>
                     <button @click="active = false" class='js-toggle-login login--login-submit'>Login</button>
                 </div>
             </div>
             <div class='login--toggle-container'>
                 <small>Hey you,</small>
                 <div @click="login" class='js-toggle-login'>Login</div>
-                <small>already</small>
+                <small>welcome</small>
             </div>
         </div>
     </div>
@@ -27,12 +27,14 @@
         mounted(){
             this.timer =  setTimeout(()=>{
                 this.active = true;
-            },2000)
+            },1000)
         },
         data(){
             return{
                 active:false,
-                timer:null
+                timer:null,
+                userName:"23325235",
+                password:"213123123"
             }
         },
         methods:{
@@ -71,18 +73,18 @@
         margin-bottom: 0.35em;
     }
 
-    input[type="text"], input[type="password"] {
-        width: 100%;
-        border: none;
-        padding: 0.5em;
-        border-radius: 2px;
-        margin-bottom: 0.5em;
-        color: #333;
-    }
-    input[type="text"]:focus, input[type="password"]:focus {
-        outline: none;
-        box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.3);
-    }
+    /*input[type="text"], input[type="password"] {*/
+    /*    width: 100%;*/
+    /*    border: none;*/
+    /*    padding: 0.5em;*/
+    /*    border-radius: 2px;*/
+    /*    margin-bottom: 0.5em;*/
+    /*    color: #333;*/
+    /*}*/
+    /*input[type="text"]:focus, input[type="password"]:focus {*/
+    /*    outline: none;*/
+    /*    box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.3);*/
+    /*}*/
 
     button {
         padding-left: 1.5em;
