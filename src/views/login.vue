@@ -1,167 +1,247 @@
 <template>
-    <div class="main" >
-        <div class=' login--container' :class="active?'login--active':'preload'">
-            <div class='login--form'>
-                <div class='login--username-container'>
-                    <label>用户名</label>
-                    <a-input v-model="userName" autofocus placeholder='Username' type='text'/>
-                </div>
-                <div class='login--password-container'>
-                    <label>密码</label>
-                    <a-input v-model="password" placeholder='Password' type='password'/>
-                    <button @click="active = false" class='js-toggle-login login--login-submit'>Login</button>
-                </div>
-            </div>
-            <div class='login--toggle-container'>
-                <small>Hey you,</small>
-                <div @click="login" class='js-toggle-login'>Login</div>
-                <small>welcome</small>
-            </div>
-        </div>
+    <div class="main">
+        <canvas id="c"></canvas>
     </div>
 </template>
 
 <script>
+    import * as dat from 'dat.gui';
+    import Verctor from "../util/Verctor";
+    import GravityPoint from "../util/gravityPoint";
+    import Particle from "../util/Particle"
+
     export default {
         name: "login",
-        mounted(){
-            this.timer =  setTimeout(()=>{
-                this.active = true;
-            },1000)
-        },
-        data(){
-            return{
-                active:false,
-                timer:null,
-                userName:"23325235",
-                password:"213123123"
+        data() {
+            return {
+                // Configs
+                BACKGROUND_COLOR: 'rgba(11, 51, 56, 1)',
+                PARTICLE_RADIUS: 1,
+                G_POINT_RADIUS: 10,
+
+                // lets
+                canvas: null,
+                context: null,
+                bufferCvs: null,
+                bufferCtx: null,
+                screenWidth: null,
+                screenHeight: null,
+                mouse: new Verctor(),
+                gravities: [],
+                particles: [],
+                grad: null,
+                gui: null,
+                control: null
             }
         },
-        methods:{
-            login(){
-                clearTimeout(this.timer);
-                this.active = true
+        mounted() {
+            /**
+             * requestAnimationFrame
+             */
+            window.requestAnimationFrame = this.getRequestAnimationFrame();
+            this.init()
+        },
+        methods: {
+            init() {
+                // GUI Control
+                this.control = {
+                    particleNum: 100
+                };
+
+                // Init
+                this.canvas = document.getElementById('c');
+                this.bufferCvs = document.createElement('canvas');
+
+                window.addEventListener('resize', this.resize, false);
+                this.resize(null);
+
+                this.addParticle(this.control.particleNum);
+
+                this.canvas.addEventListener('mousemove', this.mouseMove, false);
+                this.canvas.addEventListener('mousedown', this.mouseDown, false);
+                this.canvas.addEventListener('mouseup', this.mouseUp, false);
+                this.canvas.addEventListener('dblclick', this.doubleClick, false);
+
+
+                // GUI
+
+                this.gui = new dat.GUI();
+                this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange( () =>{
+                    let n = (this.control.particleNum | 0) - this.particles.length;
+                    if (n > 0)
+                        this.addParticle(n);
+                    else if (n < 0)
+                        this.removeParticle(-n);
+                });
+                this.gui.add(GravityPoint, 'interferenceToPoint').name('Interference Between Point');
+                this.gui.close();
+
+                // Start Update
+
+                this.loop();
+
+            },
+            loop() {
+                let i, len, g, p;
+
+                this.context.save();
+                this.context.fillStyle = this.BACKGROUND_COLOR;
+                this.context.fillRect(0, 0, this.screenWidth, this.screenHeight);
+                this.context.fillStyle = this.grad;
+                this.context.fillRect(0, 0, this.screenWidth, this.screenHeight);
+                this.context.restore();
+
+                for (i = 0, len = this.gravities.length; i < len; i++) {
+                    g = this.gravities[i];
+                    if (g.dragging) g.drag(this.mouse);
+                    g.render(this.context);
+                    if (g.destroyed) {
+                        this.gravities.splice(i, 1);
+                        len--;
+                        i--;
+                    }
+                }
+
+                this.bufferCtx.save();
+                this.bufferCtx.globalCompositeOperation = 'destination-out';
+                this.bufferCtx.globalAlpha = 0.35;
+                this. bufferCtx.fillRect(0, 0, this.screenWidth, this.screenHeight);
+                this.bufferCtx.restore();
+
+                // パーティクルをバッファに描画
+                // for (i = 0, len = particles.length; i < len; i++) {
+                //     particles[i].render(bufferCtx);
+                // }
+                len = this.particles.length;
+                this.bufferCtx.save();
+                this. bufferCtx.fillStyle = this.bufferCtx.strokeStyle = '#fff';
+                this. bufferCtx.lineCap = this.bufferCtx.lineJoin = 'round';
+                this.bufferCtx.lineWidth = this.PARTICLE_RADIUS * 2;
+                this.bufferCtx.beginPath();
+                for (i = 0; i < len; i++) {
+                    p = this.particles[i];
+                    p.update();
+                    this.bufferCtx.moveTo(p.x, p.y);
+                    this.bufferCtx.lineTo(p._latest.x, p._latest.y);
+                }
+                this.bufferCtx.stroke();
+                this.bufferCtx.beginPath();
+                for (i = 0; i < len; i++) {
+                    p = this.particles[i];
+                    this.bufferCtx.moveTo(p.x, p.y);
+                    this.bufferCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+                }
+                this.bufferCtx.fill();
+                this.bufferCtx.restore();
+
+                // バッファをキャンバスに描画
+                this.context.drawImage(this.bufferCvs, 0, 0);
+
+                requestAnimationFrame(this.loop);
+            },
+            // Event Listeners
+            resize() {
+                this.screenWidth = this.canvas.width = window.innerWidth;
+                this.screenHeight = this.canvas.height = window.innerHeight;
+                this. bufferCvs.width = this.screenWidth;
+                this.bufferCvs.height = this.screenHeight;
+                this.context = this.canvas.getContext('2d');
+                this.bufferCtx = this.bufferCvs.getContext('2d');
+
+                let cx = this.canvas.width * 0.5,
+                    cy = this.canvas.height * 0.5;
+
+                this.grad =this. context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
+                this.grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                this.grad.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
+            },
+
+            mouseMove(e) {
+                this.mouse.set(e.clientX, e.clientY);
+
+                let i, g, hit = false;
+                for (i = this.gravities.length - 1; i >= 0; i--) {
+                    g = this.gravities[i];
+                    if ((!hit && g.hitTest(this.mouse)) || g.dragging)
+                        g.isMouseOver = hit = true;
+                    else
+                        g.isMouseOver = false;
+                }
+
+                this.canvas.style.cursor = hit ? 'pointer' : 'default';
+            },
+
+            mouseDown(e) {
+                for (let i = this.gravities.length - 1; i >= 0; i--) {
+                    if (this.gravities[i].isMouseOver) {
+                        this.gravities[i].startDrag(this.mouse);
+                        return;
+                    }
+                }
+                this.gravities.push(new GravityPoint(e.clientX, e.clientY, this.G_POINT_RADIUS, {
+                    particles: this.particles,
+                    gravities: this.gravities
+                }));
+            },
+
+            mouseUp() {
+                for (let i = 0, len = this.gravities.length; i < len; i++) {
+                    if (this.gravities[i].dragging) {
+                        this.gravities[i].endDrag();
+                        break;
+                    }
+                }
+            },
+
+            doubleClick() {
+                for (let i = this.gravities.length - 1; i >= 0; i--) {
+                    if (this.gravities[i].isMouseOver) {
+                        this.gravities[i].collapse();
+                        break;
+                    }
+                }
+            },
+            //function
+            addParticle(num) {
+                let i, p;
+                for (i = 0; i < num; i++) {
+                    p = new Particle(
+                        Math.floor(Math.random() * this.screenWidth - this.PARTICLE_RADIUS * 2) + 1 + this.PARTICLE_RADIUS,
+                        Math.floor(Math.random() * this.screenHeight - this.PARTICLE_RADIUS * 2) + 1 + this.PARTICLE_RADIUS,
+                        this.PARTICLE_RADIUS
+                    );
+                    p.addSpeed(Verctor.random());
+                    this.particles.push(p);
+                }
+            },
+            removeParticle(num) {
+                if (this.particles.length < num) num = this.particles.length;
+                for (let i = 0; i < num; i++) {
+                    this.particles.pop();
+                }
+            },
+            getRequestAnimationFrame() {
+                return window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimationFrame ||
+                    function (callback) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
             }
         }
     }
 </script>
 
 <style scoped>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    canvas {
+        width: 100%;
+        height: 100%;
     }
 
     .main {
+        width: 100%;
         height: 100%;
-        background-color: #F15A5C;
-        font-family: "Roboto Slab", serif;
-        color: white;
     }
-
-    .preload * {
-        transition: none !important;
-    }
-
-    label {
-        display: block;
-        font-weight: bold;
-        font-size: small;
-        text-transform: uppercase;
-        font-size: 0.7em;
-        margin-bottom: 0.35em;
-    }
-
-    /*input[type="text"], input[type="password"] {*/
-    /*    width: 100%;*/
-    /*    border: none;*/
-    /*    padding: 0.5em;*/
-    /*    border-radius: 2px;*/
-    /*    margin-bottom: 0.5em;*/
-    /*    color: #333;*/
-    /*}*/
-    /*input[type="text"]:focus, input[type="password"]:focus {*/
-    /*    outline: none;*/
-    /*    box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.3);*/
-    /*}*/
-
-    button {
-        padding-left: 1.5em;
-        padding-right: 1.5em;
-        padding-bottom: 0.5em;
-        padding-top: 0.5em;
-        border: none;
-        border-radius: 2px;
-        background-color: #7E5AF1;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
-        color: white;
-        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.45);
-    }
-
-    small {
-        font-size: 1em;
-    }
-
-    .login--login-submit {
-        float: right;
-    }
-
-    .login--container {
-        width: 600px;
-        background-color: #F15A5C;
-        margin: 0 auto;
-        position: relative;
-        top: 25%;
-    }
-
-    .login--toggle-container {
-        position: absolute;
-        background-color: #F15A5C;
-        right: 0;
-        line-height: 2.5em;
-        width: 50%;
-        height: 120px;
-        text-align: right;
-        cursor: pointer;
-        transform: perspective(1000px) translateZ(1px);
-        transform-origin: 0% 0%;
-        transition: all 1s cubic-bezier(0.06, 0.63, 0, 1);
-        backface-visibility: hidden;
-    }
-    .login--toggle-container .js-toggle-login {
-        font-size: 4em;
-        text-decoration: underline;
-    }
-    .login--active .login--toggle-container {
-        transform: perspective(1000px) rotateY(180deg);
-        background-color: #bc1012;
-    }
-
-    .login--username-container, .login--password-container {
-        float: left;
-        background-color: #F15A5C;
-        width: 50%;
-        height: 120px;
-        padding: 0.5em;
-    }
-
-    .login--username-container {
-        transform-origin: 100% 0%;
-        transform: perspective(1000px) rotateY(180deg);
-        transition: all 1s cubic-bezier(0.06, 0.63, 0, 1);
-        background-color: #bc1012;
-        backface-visibility: hidden;
-    }
-    .login--active .login--username-container {
-        transform: perspective(1000px) rotateY(0deg);
-        background-color: #F15A5C;
-    }
-
-    footer {
-        position: absolute;
-        bottom: 12px;
-        left: 20px;
-    }
-
 </style>
