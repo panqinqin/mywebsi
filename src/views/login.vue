@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        432324
         <canvas id="c"></canvas>
     </div>
 </template>
@@ -31,7 +32,8 @@
                 particles: [],
                 grad: null,
                 gui: null,
-                control: null
+                control: null,
+                item:null
             }
         },
         mounted() {
@@ -60,13 +62,12 @@
                 this.canvas.addEventListener('mousemove', this.mouseMove, false);
                 this.canvas.addEventListener('mousedown', this.mouseDown, false);
                 this.canvas.addEventListener('mouseup', this.mouseUp, false);
-                this.canvas.addEventListener('dblclick', this.doubleClick, false);
 
 
                 // GUI
 
                 this.gui = new dat.GUI();
-                this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange( () =>{
+                this.item = this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange( () =>{
                     let n = (this.control.particleNum | 0) - this.particles.length;
                     if (n > 0)
                         this.addParticle(n);
@@ -151,7 +152,7 @@
                 let cx = this.canvas.width * 0.5,
                     cy = this.canvas.height * 0.5;
 
-                this.grad =this. context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
+                this.grad =this.context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
                 this.grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
                 this.grad.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
             },
@@ -192,16 +193,8 @@
                     }
                 }
             },
-
-            doubleClick() {
-                for (let i = this.gravities.length - 1; i >= 0; i--) {
-                    if (this.gravities[i].isMouseOver) {
-                        this.gravities[i].collapse();
-                        break;
-                    }
-                }
-            },
             //function
+            //添加粒子
             addParticle(num) {
                 let i, p;
                 for (i = 0; i < num; i++) {

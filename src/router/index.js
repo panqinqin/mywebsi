@@ -5,7 +5,7 @@ Vue.use(Router);
 let menu = [
     {
         path: '/',
-        name:"home",
+        name:"/",
         redirect: '/login',
     },
     {
@@ -16,11 +16,9 @@ let menu = [
         }
     },
     {
-        path: '/',
-        name:"loveTrack",
-        component: resolve => {
-            require(['@/components/main.vue'], resolve) //懒加载，预加载
-        },
+        path: '/home',
+        name:"home",
+        component: ()=> import ('@/components/empty.vue'),
         children:[
             {
                 path: '/loveTrack',

@@ -1,5 +1,5 @@
 
-class Verctor{  //定义一个名字为Person的类
+class Verctor{
     constructor(x, y) {
         this.x = x || 0;
         this.y = y || 0;
@@ -13,6 +13,7 @@ class Verctor{  //定义一个名字为Person的类
     };
 
     static scale(v, s) {
+        console.log(v,s)
         return v.clone().scale(s);
     };
 

@@ -92,8 +92,7 @@ GravityPoint.prototype =(function(o) {
                 ) {
                     g.destroyed = true;
                     this.gravity += g.gravity;
-
-                    absorp = Verctor.scale(g.radius / this.radius * 0.5);
+                    absorp = Verctor.sub(g, this).scale(g.radius / this.radius * 0.5);
                     this.addSpeed(absorp);
 
                     garea = g.radius * g.radius * Math.PI;
