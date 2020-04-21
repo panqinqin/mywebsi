@@ -49,7 +49,7 @@
             init() {
                 // GUI Control
                 this.control = {
-                    particleNum: 100
+                    particleNum: 188
                 };
 
                 // Init
@@ -65,19 +65,19 @@
                 this.canvas.addEventListener('mousedown', this.mouseDown, false);
                 this.canvas.addEventListener('mouseup', this.mouseUp, false);
 
-
+                this.mouseDown({clientX:this.screenWidth/3 , clientY:this.screenHeight/2 });
                 // GUI
 
-                this.gui = new dat.GUI();
-                this.item = this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange(() => {
-                    let n = (this.control.particleNum | 0) - this.particles.length;
-                    if (n > 0)
-                        this.addParticle(n);
-                    else if (n < 0)
-                        this.removeParticle(-n);
-                });
-                this.gui.add(GravityPoint, 'interferenceToPoint').name('Interference Between Point');
-                this.gui.close();
+                // this.gui = new dat.GUI();
+                // this.item = this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange(() => {
+                //     let n = (this.control.particleNum | 0) - this.particles.length;
+                //     if (n > 0)
+                //         this.addParticle(n);
+                //     else if (n < 0)
+                //         this.removeParticle(-n);
+                // });
+                // this.gui.add(GravityPoint, 'interferenceToPoint').name('Interference Between Point');
+                // this.gui.close();
 
                 // Start Update
 
