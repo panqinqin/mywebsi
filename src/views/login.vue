@@ -1,5 +1,8 @@
 <template>
     <div class="main">
+        <!--<span id="musicControl" style="position: absolute;top: 10px;right: 20px">-->
+            <!--<audio id="music" controls="controls"  loop="loop"  src="../../static/G.E.M..mp3" ></audio>-->
+        <!--</span>-->
         <canvas id="c"></canvas>
     </div>
 </template>
@@ -41,10 +44,12 @@
              */
             window.requestAnimationFrame = this.getRequestAnimationFrame();
             this.init()
+
+            setInterval(this.play(), 10);
         },
-        beforeDestroy() {
-            this.gui.destroy();
-        },
+        // beforeDestroy() {
+        //     this.gui.destroy();
+        // },
         methods: {
             init() {
                 // GUI Control
@@ -65,7 +70,7 @@
                 this.canvas.addEventListener('mousedown', this.mouseDown, false);
                 this.canvas.addEventListener('mouseup', this.mouseUp, false);
 
-                this.mouseDown({clientX:this.screenWidth/3 , clientY:this.screenHeight/2 });
+                this.mouseDown({clientX: this.screenWidth / 3, clientY: this.screenHeight / 2});
                 // GUI
 
                 // this.gui = new dat.GUI();
