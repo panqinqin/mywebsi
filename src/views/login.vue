@@ -1,6 +1,5 @@
 <template>
     <div class="main">
-        432324
         <canvas id="c"></canvas>
     </div>
 </template>
@@ -33,7 +32,7 @@
                 grad: null,
                 gui: null,
                 control: null,
-                item:null
+                item: null
             }
         },
         mounted() {
@@ -42,6 +41,9 @@
              */
             window.requestAnimationFrame = this.getRequestAnimationFrame();
             this.init()
+        },
+        beforeDestroy() {
+            this.gui.destroy();
         },
         methods: {
             init() {
@@ -67,7 +69,7 @@
                 // GUI
 
                 this.gui = new dat.GUI();
-                this.item = this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange( () =>{
+                this.item = this.gui.add(this.control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange(() => {
                     let n = (this.control.particleNum | 0) - this.particles.length;
                     if (n > 0)
                         this.addParticle(n);
@@ -106,7 +108,7 @@
                 this.bufferCtx.save();
                 this.bufferCtx.globalCompositeOperation = 'destination-out';
                 this.bufferCtx.globalAlpha = 0.35;
-                this. bufferCtx.fillRect(0, 0, this.screenWidth, this.screenHeight);
+                this.bufferCtx.fillRect(0, 0, this.screenWidth, this.screenHeight);
                 this.bufferCtx.restore();
 
                 // パーティクルをバッファに描画
@@ -115,8 +117,8 @@
                 // }
                 len = this.particles.length;
                 this.bufferCtx.save();
-                this. bufferCtx.fillStyle = this.bufferCtx.strokeStyle = '#fff';
-                this. bufferCtx.lineCap = this.bufferCtx.lineJoin = 'round';
+                this.bufferCtx.fillStyle = this.bufferCtx.strokeStyle = '#fff';
+                this.bufferCtx.lineCap = this.bufferCtx.lineJoin = 'round';
                 this.bufferCtx.lineWidth = this.PARTICLE_RADIUS * 2;
                 this.bufferCtx.beginPath();
                 for (i = 0; i < len; i++) {
@@ -144,7 +146,7 @@
             resize() {
                 this.screenWidth = this.canvas.width = window.innerWidth;
                 this.screenHeight = this.canvas.height = window.innerHeight;
-                this. bufferCvs.width = this.screenWidth;
+                this.bufferCvs.width = this.screenWidth;
                 this.bufferCvs.height = this.screenHeight;
                 this.context = this.canvas.getContext('2d');
                 this.bufferCtx = this.bufferCvs.getContext('2d');
@@ -152,7 +154,7 @@
                 let cx = this.canvas.width * 0.5,
                     cy = this.canvas.height * 0.5;
 
-                this.grad =this.context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
+                this.grad = this.context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
                 this.grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
                 this.grad.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
             },
