@@ -4,6 +4,8 @@
             <!--<audio id="music" controls="controls"  loop="loop"  src="../../static/G.E.M..mp3" ></audio>-->
         <!--</span>-->
         <canvas id="c"></canvas>
+        <div style="width: 400px;height: 200px;background: red;position: absolute;right: 0;top:calc(50% - 100px)">
+        </div>
     </div>
 </template>
 
@@ -18,7 +20,7 @@
         data() {
             return {
                 // Configs
-                BACKGROUND_COLOR: 'rgba(11, 51, 56, 1)',
+                BACKGROUND_COLOR: 'black',
                 PARTICLE_RADIUS: 1,
                 G_POINT_RADIUS: 10,
 
@@ -45,7 +47,7 @@
             window.requestAnimationFrame = this.getRequestAnimationFrame();
             this.init()
 
-            setInterval(this.play(), 10);
+
         },
         // beforeDestroy() {
         //     this.gui.destroy();
