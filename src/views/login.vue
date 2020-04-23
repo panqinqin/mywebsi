@@ -4,7 +4,9 @@
             <!--<audio id="music" controls="controls"  loop="loop"  src="../../static/G.E.M..mp3" ></audio>-->
         <!--</span>-->
         <canvas id="c"></canvas>
-        <div style="width: 400px;height: 200px;background: red;position: absolute;right: 0;top:calc(50% - 100px)">
+        <div class="content" >
+            <span >COME WITH ME</span>
+            <a @click="goHome" >click this</a>
         </div>
     </div>
 </template>
@@ -20,7 +22,7 @@
         data() {
             return {
                 // Configs
-                BACKGROUND_COLOR: 'black',
+                BACKGROUND_COLOR: '#4a4a4a',
                 PARTICLE_RADIUS: 1,
                 G_POINT_RADIUS: 10,
 
@@ -53,6 +55,9 @@
         //     this.gui.destroy();
         // },
         methods: {
+            goHome(){
+                this.$router.push("loveTrack")
+            },
             init() {
                 // GUI Control
                 this.control = {
@@ -245,5 +250,30 @@
     .main {
         width: 100%;
         height: 100%;
+    }
+    .content{
+        width: 400px;color:white;position: absolute;right: 0;top:calc(50% - 100px);text-align: center;text-shadow: 1px 1px 0 #212121;cursor: pointer;font-style: italic
+    }
+    .content span{
+        font-size: 40px;font-weight: 600
+    }
+    .content a{
+        margin-top: 20px;
+        display: inline-block;
+        padding: 6px;
+        width: 200px;
+        border: 1px solid #fafafa;
+        color: #fafafa;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 24px;
+        font-weight: 600;
+    }
+    .content a:hover{
+        border: 1px solid #f300b4;
+        -webkit-transform: translateY(-2px);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 100px -20px #f300b4;
+        -webkit-box-shadow:0 10px 100px -20px #f300b4;
     }
 </style>
