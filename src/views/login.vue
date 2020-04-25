@@ -1,12 +1,12 @@
 <template>
     <div class="main">
         <!--<span id="musicControl" style="position: absolute;top: 10px;right: 20px">-->
-            <!--<audio id="music" controls="controls"  loop="loop"  src="../../static/G.E.M..mp3" ></audio>-->
+        <!--<audio id="music" controls="controls"  loop="loop"  src="../../static/G.E.M..mp3" ></audio>-->
         <!--</span>-->
         <canvas id="c"></canvas>
-        <div class="content" >
-            <span >COME WITH ME</span>
-            <a @click="goHome" >click this</a>
+        <div class="content">
+            <span>COME WITH ME</span>
+            <a @click="goHome">click here</a>
         </div>
     </div>
 </template>
@@ -55,7 +55,7 @@
         //     this.gui.destroy();
         // },
         methods: {
-            goHome(){
+            goHome() {
                 this.$router.push("loveTrack")
             },
             init() {
@@ -251,13 +251,25 @@
         width: 100%;
         height: 100%;
     }
-    .content{
-        width: 400px;color:white;position: absolute;right: 0;top:calc(50% - 100px);text-align: center;text-shadow: 1px 1px 0 #212121;cursor: pointer;font-style: italic
+
+    .content {
+        width: 400px;
+        color: white;
+        position: absolute;
+        right: 0;
+        top: calc(50% - 100px);
+        text-align: center;
+        text-shadow: 1px 1px 0 #212121;
+        cursor: pointer;
+        font-style: italic
     }
-    .content span{
-        font-size: 40px;font-weight: 600
+
+    .content span {
+        font-size: 40px;
+        font-weight: 600
     }
-    .content a{
+
+    .content a {
         margin-top: 20px;
         display: inline-block;
         padding: 6px;
@@ -269,11 +281,12 @@
         font-size: 24px;
         font-weight: 600;
     }
-    .content a:hover{
+
+    .content a:hover {
         border: 1px solid #f300b4;
         -webkit-transform: translateY(-2px);
         transform: translateY(-2px);
         box-shadow: 0 10px 100px -20px #f300b4;
-        -webkit-box-shadow:0 10px 100px -20px #f300b4;
+        -webkit-box-shadow: 0 10px 100px -20px #f300b4;
     }
 </style>
