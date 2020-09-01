@@ -5,14 +5,16 @@
 </template>
 
 <script>
+    import { Component , Vue} from 'vue-property-decorator'
 
-    export default {
-    name: 'App',
-    components: {}
-    }
-    </script>
+    @Component({
+        name: 'App'
+    })
+    export default class extends Vue {}
+</script>
 
-      <style>
+
+<style>
       #app {
           width: 100%;
           height: 100%;
