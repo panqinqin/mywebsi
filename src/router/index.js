@@ -1,0 +1,37 @@
+import Router from 'vue-router'
+import Vue from "vue";
+
+Vue.use(Router);
+let menu = [
+    {
+        path: '/',
+        name:"/",
+        redirect: '/login',
+    },
+    {
+        path: '/login',
+        name:"login",
+        component: resolve => {
+            require(['@/views/login.vue'], resolve) //懒加载，预加载
+        }
+    },
+    {
+        path: '/home',
+        name:"home",
+        component: ()=> import ('@/components/empty.vue'),
+        children:[
+            {
+                path: '/loveTrack',
+                name:"loveTrack",
+                component: resolve => {
+                    require(['@/views/codepen/loveTrack.vue'], resolve) //懒加载，预加载
+                }
+            }
+        ]
+    },
+
+];
+
+const router = new Router({routes: menu});
+
+export default router;
