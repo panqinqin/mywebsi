@@ -26,6 +26,13 @@ let menu = [
                 component: resolve => {
                     require(['@/views/codepen/loveTrack.vue'], resolve) //懒加载，预加载
                 }
+            },
+            {
+                path: '/konva',
+                name:"konva",
+                component: resolve => {
+                    require(['@/views/codepen/konva.vue'], resolve) //懒加载，预加载
+                }
             }
         ]
     },
