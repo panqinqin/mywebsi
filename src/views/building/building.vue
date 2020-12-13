@@ -49,6 +49,8 @@
                         title: '房号',
                         dataIndex: 'number',
                         key: 'number',
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.number - b.number,
                     },
                     {
                         title: '单价',
@@ -62,29 +64,35 @@
                         dataIndex: 'allprice',
                         key: 'allprice',
                         defaultSortOrder: 'descend',
-                        sorter: (a, b) => a.price - b.price,
+                        sorter: (a, b) => a.allprice - b.allprice,
                     },
                     {
                         title: '首付',
                         dataIndex: 'shoufu',
                         key: 'shoufu',
                         defaultSortOrder: 'descend',
-                        sorter: (a, b) => a.price - b.price,
+                        sorter: (a, b) => a.shoufu - b.shoufu,
                     },
                     {
                         title: '建筑面积',
                         dataIndex: 'area1',
                         key: 'area1',
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.area1 - b.area1,
                     },
                     {
                         title: '户内面积',
                         dataIndex: 'area2',
                         key: 'area2',
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.area2 - b.area2,
                     },
                     {
                         title: '分摊面积',
                         dataIndex: 'area3',
                         key: 'area3',
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.area3 - b.area3,
                     },
                 ]
 
