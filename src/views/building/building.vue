@@ -49,49 +49,66 @@
                         title: '房号',
                         dataIndex: 'number',
                         key: 'number',
-                        defaultSortOrder: 'descend',
+                        // defaultSortOrder: 'descend',
                         sorter: (a, b) => a.number - b.number,
+                        filters: [
+                            {
+                                text: '01',
+                                value: '01',
+                            },
+                            {
+                                text: '02',
+                                value: '02',
+                            },
+                            {
+                                text: '03',
+                                value: '03',
+                            },
+                            {
+                                text: '04',
+                                value: '04',
+                            }, {
+                                text: '05',
+                                value: '05',
+                            },
+                        ],
+                        onFilter: (value, record) => record.number.indexOf(value) !== -1,
                     },
                     {
                         title: '单价',
                         dataIndex: 'price',
                         key: 'price',
-                        defaultSortOrder: 'descend',
+                        defaultSortOrder: 'ascend',
                         sorter: (a, b) => a.price - b.price,
                     },
                     {
                         title: '总价',
                         dataIndex: 'allprice',
                         key: 'allprice',
-                        defaultSortOrder: 'descend',
                         sorter: (a, b) => a.allprice - b.allprice,
                     },
                     {
                         title: '首付',
                         dataIndex: 'shoufu',
                         key: 'shoufu',
-                        defaultSortOrder: 'descend',
                         sorter: (a, b) => a.shoufu - b.shoufu,
                     },
                     {
                         title: '建筑面积',
                         dataIndex: 'area1',
                         key: 'area1',
-                        defaultSortOrder: 'descend',
                         sorter: (a, b) => a.area1 - b.area1,
                     },
                     {
                         title: '户内面积',
                         dataIndex: 'area2',
                         key: 'area2',
-                        defaultSortOrder: 'descend',
                         sorter: (a, b) => a.area2 - b.area2,
                     },
                     {
                         title: '分摊面积',
                         dataIndex: 'area3',
                         key: 'area3',
-                        defaultSortOrder: 'descend',
                         sorter: (a, b) => a.area3 - b.area3,
                     },
                 ]
