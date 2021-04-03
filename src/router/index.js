@@ -28,6 +28,13 @@ let menu = [
                 }
             },
             {
+                path: '/images',
+                name:"images",
+                component: resolve => {
+                    require(['@/views/images.vue'], resolve) //懒加载，预加载
+                }
+            },
+            {
                 path: '/konva',
                 name:"konva",
                 component: resolve => {
